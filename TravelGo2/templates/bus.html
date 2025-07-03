@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Buses - TravelGo{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: calc(100vh - 4rem); padding-top: 6rem; background: linear-gradient(135deg, #5e35b1 0%, #7b1fa2 100%);">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="max-width: 48rem; padding-top: 0; padding-bottom: 0;">
+        <div class="booking-card" style="padding: 2rem;">
+            <h2 style="font-size: 1.875rem; font-weight: bold; color: #374151; margin-bottom: 1.5rem; text-align: center;">Find Your Perfect Bus</h2>
+            
+            <!-- Bus Form -->
+            <form action="{{ url_for('search_buses') }}" method="POST" id="buses-form-page">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="busFrom">From</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="busFrom" name="busFrom" placeholder="Departure city" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="busTo">To</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="busTo" name="busTo" placeholder="Destination city" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="busDate">Travel Date</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="busDate" name="busDate" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="busPassengers">Passengers</label>
+                        <select id="busPassengers" name="busPassengers" class="form-select">
+                            <option>1 Adult</option>
+                            <option>2 Adults</option>
+                            <option>3 Adults</option>
+                            <option>4+ Adults</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Search Buses</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

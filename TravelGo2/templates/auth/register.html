@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}TravelGo - Sign Up{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: calc(100vh - 4rem); padding-top: 6rem; background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="max-width: 28rem; padding-top: 0; padding-bottom: 0;">
+        <div class="booking-card" style="padding: 2rem;">
+            <h2 style="font-size: 1.875rem; font-weight: bold; color: #374151; margin-bottom: 1.5rem; text-align: center;">Create Your TravelGo Account</h2>
+            <form action="{{ url_for('register') }}" method="POST">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user-plus" class="input-icon"></i>
+                        <input type="text" id="username" name="username" placeholder="Choose a username" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" class="input-icon"></i>
+                        <input type="email" id="email" name="email" placeholder="Your email address" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="key" class="input-icon"></i>
+                        <input type="password" id="password" name="password" placeholder="Create a strong password" class="form-input" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">Sign Up</button>
+            </form>
+            <p style="text-align: center; margin-top: 1.5rem; color: #6b7280;">
+                Already have an account? <a href="{{ url_for('login') }}" style="color: #2563eb; text-decoration: none; font-weight: 500;">Sign In</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Trains - TravelGo{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: calc(100vh - 4rem); padding-top: 6rem; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="max-width: 48rem; padding-top: 0; padding-bottom: 0;">
+        <div class="booking-card" style="padding: 2rem;">
+            <h2 style="font-size: 1.875rem; font-weight: bold; color: #374151; margin-bottom: 1.5rem; text-align: center;">Find Your Perfect Train</h2>
+            
+            <!-- Train Form -->
+            <form action="{{ url_for('search_trains') }}" method="POST" id="trains-form-page">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="trainFrom">From Station</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="trainFrom" name="trainFrom" placeholder="Departure station" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainTo">To Station</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="trainTo" name="trainTo" placeholder="Arrival station" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label for="trainDate">Travel Date</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="trainDate" name="trainDate" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainClass">Class</label>
+                        <select id="trainClass" name="trainClass" class="form-select">
+                            <option>Economy</option>
+                            <option>Business</option>
+                            <option>First Class</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="trainPassengers">Passengers</label>
+                        <select id="trainPassengers" name="trainPassengers" class="form-select">
+                            <option>1 Adult</option>
+                            <option>2 Adults</option>
+                            <option>3 Adults</option>
+                            <option>4+ Adults</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Search Trains</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

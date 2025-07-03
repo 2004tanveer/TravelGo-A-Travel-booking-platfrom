@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Flights - TravelGo{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: calc(100vh - 4rem); padding-top: 6rem; background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0f766e 100%);">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="max-width: 48rem; padding-top: 0; padding-bottom: 0;">
+        <div class="booking-card" style="padding: 2rem;">
+            <h2 style="font-size: 1.875rem; font-weight: bold; color: #374151; margin-bottom: 1.5rem; text-align: center;">Find Your Perfect Flight</h2>
+            
+            <!-- Flight Form -->
+            <form action="{{ url_for('search_flights') }}" method="POST" id="flights-form-page">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="flightFrom">From</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="flightFrom" name="flightFrom" placeholder="Departure city" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="flightTo">To</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="map-pin" class="input-icon"></i>
+                            <input type="text" id="flightTo" name="flightTo" placeholder="Destination city" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label for="flightDeparture">Departure</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="flightDeparture" name="flightDeparture" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="flightReturn">Return</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="flightReturn" name="flightReturn" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="flightPassengers">Passengers</label>
+                        <select id="flightPassengers" name="flightPassengers" class="form-select">
+                            <option>1 Adult</option>
+                            <option>2 Adults</option>
+                            <option>3 Adults</option>
+                            <option>4+ Adults</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Search Flights</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

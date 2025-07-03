@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Train Search Results - TravelGo{% endblock %}
+
+{% block content %}
+<section class="search-results-section" style="padding-top: 6rem;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Trains from {{ search_params.trainFrom }} to {{ search_params.trainTo }}</h2>
+            <p class="section-subtitle">Date: {{ search_params.trainDate }} | Class: {{ search_params.trainClass }}</p>
+        </div>
+
+        {% if trains %}
+            <div class="results-grid">
+                {% for train in trains %}
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3 class="result-title">{{ train.train_number }} ({{ train.departure_time }} - {{ train.arrival_time }})</h3>
+                        <span class="result-price">${{ train.price }}</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> From: {{ train.from }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> To: {{ train.to }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Date: {{ train.departure_date }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="train"></i> Class: {{ train.travel_class }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Passengers: {{ search_params.trainPassengers }}
+                        </div>
+                    </div>
+                    <div class="result-footer">
+                        {# Changed action to go to seat selection page #}
+                        <form action="{{ url_for('select_train_seats', train_id=train.id) }}" method="GET">
+                            {# Pass all necessary train details as hidden inputs to the selection page #}
+                            <input type="hidden" name="train_number" value="{{ train.train_number }}">
+                            <input type="hidden" name="from" value="{{ train.from }}">
+                            <input type="hidden" name="to" value="{{ train.to }}">
+                            <input type="hidden" name="departure_date" value="{{ train.departure_date }}">
+                            <input type="hidden" name="departure_time" value="{{ train.departure_time }}">
+                            <input type="hidden" name="arrival_time" value="{{ train.arrival_time }}">
+                            <input type="hidden" name="travel_class" value="{{ train.travel_class }}">
+                            <input type="hidden" name="price" value="{{ train.price }}">
+                            <input type="hidden" name="trainFrom" value="{{ search_params.trainFrom }}">
+                            <input type="hidden" name="trainTo" value="{{ search_params.trainTo }}">
+                            <input type="hidden" name="trainDate" value="{{ search_params.trainDate }}">
+                            <input type="hidden" name="trainClass" value="{{ search_params.trainClass }}">
+                            <input type="hidden" name="trainPassengers" value="{{ search_params.trainPassengers }}">
+
+                            <button type="submit" class="btn btn-primary">Select Seats</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; color: #6b7280; font-size: 1.1rem; padding: 2rem; background: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                No trains found for your search criteria. Please try different dates or stations.
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

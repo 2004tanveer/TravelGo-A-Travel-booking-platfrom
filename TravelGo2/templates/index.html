@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}TravelGo - Your Journey Starts Here{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Your Journey Starts with <span class="hero-brand">TravelGo</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Book buses, trains, flights, and hotels all in one place. Experience seamless travel planning with real-time updates and instant confirmations.
+                </p>
+                
+                <!-- Booking Form -->
+                <div class="booking-form-container">
+                    <div class="booking-card">
+                        <div class="tabs" id="bookingTabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="flights">
+                                    <i data-lucide="plane"></i>
+                                    <span class="tab-text">Flights</span>
+                                </button>
+                                <button class="tab-btn" data-tab="hotels">
+                                    <i data-lucide="building-2"></i>
+                                    <span class="tab-text">Hotels</span>
+                                </button>
+                                <button class="tab-btn" data-tab="trains">
+                                    <i data-lucide="train"></i>
+                                    <span class="tab-text">Trains</span>
+                                </button>
+                                <button class="tab-btn" data-tab="buses">
+                                    <i data-lucide="bus"></i>
+                                    <span class="tab-text">Buses</span>
+                                </button>
+                            </div>
+                            
+                            <!-- Flight Form -->
+                            <form action="{{ url_for('search_flights') }}" method="POST" class="tab-content active" id="flights-form">
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="flightFrom">From</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="flightFrom" name="flightFrom" placeholder="Departure city" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="flightTo">To</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="flightTo" name="flightTo" placeholder="Destination city" class="form-input" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-grid-3">
+                                    <div class="form-group">
+                                        <label for="flightDeparture">Departure</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="flightDeparture" name="flightDeparture" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="flightReturn">Return</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="flightReturn" name="flightReturn" class="form-input">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="flightPassengers">Passengers</label>
+                                        <select id="flightPassengers" name="flightPassengers" class="form-select">
+                                            <option>1 Adult</option>
+                                            <option>2 Adults</option>
+                                            <option>3 Adults</option>
+                                            <option>4+ Adults</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="search-btn">Search Flights</button>
+                            </form>
+                            
+                            <!-- Hotel Form -->
+                            <form action="{{ url_for('search_hotels') }}" method="POST" class="tab-content" id="hotels-form">
+                                <div class="form-group">
+                                    <label for="hotelDestination">Destination</label>
+                                    <div class="input-wrapper">
+                                        <i data-lucide="map-pin" class="input-icon"></i>
+                                        <input type="text" id="hotelDestination" name="hotelDestination" placeholder="City or hotel name" class="form-input" required>
+                                    </div>
+                                </div>
+                                <div class="form-grid-3">
+                                    <div class="form-group">
+                                        <label for="hotelCheckin">Check-in</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="hotelCheckin" name="hotelCheckin" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hotelCheckout">Check-out</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="hotelCheckout" name="hotelCheckout" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hotelGuests">Guests</label>
+                                        <select id="hotelGuests" name="hotelGuests" class="form-select">
+                                            <option>2 Guests, 1 Room</option>
+                                            <option>1 Guest, 1 Room</option>
+                                            <option>3 Guests, 1 Room</option>
+                                            <option>4+ Guests, 2 Rooms</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="search-btn">Search Hotels</button>
+                            </form>
+                            
+                            <!-- Train Form -->
+                            <form action="{{ url_for('search_trains') }}" method="POST" class="tab-content" id="trains-form">
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="trainFrom">From Station</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="trainFrom" name="trainFrom" placeholder="Departure station" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="trainTo">To Station</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="trainTo" name="trainTo" placeholder="Arrival station" class="form-input" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-grid-3">
+                                    <div class="form-group">
+                                        <label for="trainDate">Travel Date</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="trainDate" name="trainDate" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="trainClass">Class</label>
+                                        <select id="trainClass" name="trainClass" class="form-select">
+                                            <option>Economy</option>
+                                            <option>Business</option>
+                                            <option>First Class</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="trainPassengers">Passengers</label>
+                                        <select id="trainPassengers" name="trainPassengers" class="form-select">
+                                            <option>1 Adult</option>
+                                            <option>2 Adults</option>
+                                            <option>3 Adults</option>
+                                            <option>4+ Adults</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="search-btn">Search Trains</button>
+                            </form>
+                            
+                            <!-- Bus Form -->
+                            <form action="{{ url_for('search_buses') }}" method="POST" class="tab-content" id="buses-form">
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="busFrom">From</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="busFrom" name="busFrom" placeholder="Departure city" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="busTo">To</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="map-pin" class="input-icon"></i>
+                                            <input type="text" id="busTo" name="busTo" placeholder="Destination city" class="form-input" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="form-group">
+                                        <label for="busDate">Travel Date</label>
+                                        <div class="input-wrapper">
+                                            <i data-lucide="calendar-days" class="input-icon"></i>
+                                            <input type="date" id="busDate" name="busDate" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="busPassengers">Passengers</label>
+                                        <select id="busPassengers" name="busPassengers" class="form-select">
+                                            <option>1 Adult</option>
+                                            <option>2 Adults</option>
+                                            <option>3 Adults</option>
+                                            <option>4+ Adults</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="search-btn">Search Buses</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose TravelGo?</h2>
+                <p class="section-subtitle">Everything you need for your perfect journey</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="globe"></i>
+                    </div>
+                    <h3 class="feature-title">All-in-One Platform</h3>
+                    <p class="feature-description">Book flights, trains, buses, and hotels from a single platform</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <h3 class="feature-title">Real-time Updates</h3>
+                    <p class="feature-description">Get instant notifications about your bookings and travel updates</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+                    <h3 class="feature-title">Secure Booking</h3>
+                    <p class="feature-description">Your data and payments are protected with enterprise-grade security</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="star"></i>
+                    </div>
+                    <h3 class="feature-title">24/7 Support</h3>
+                    <p class="feature-description">Round-the-clock customer support for all your travel needs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2 class="cta-title">Ready to Start Your Journey?</h2>
+            <p class="cta-subtitle">Join thousands of travelers who trust TravelGo for their adventures</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('register') }}" class="btn btn-secondary btn-lg">Create Account</a>
+                <button class="btn btn-outline-white btn-lg">Learn More</button>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Hotels - TravelGo{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: calc(100vh - 4rem); padding-top: 6rem; background: linear-gradient(135deg, #3f51b5 0%, #2196f3 100%);">
+    <div class="hero-overlay"></div>
+    <div class="hero-content" style="max-width: 48rem; padding-top: 0; padding-bottom: 0;">
+        <div class="booking-card" style="padding: 2rem;">
+            <h2 style="font-size: 1.875rem; font-weight: bold; color: #374151; margin-bottom: 1.5rem; text-align: center;">Find Your Perfect Hotel</h2>
+            
+            <!-- Hotel Form -->
+            <form action="{{ url_for('search_hotels') }}" method="POST" id="hotels-form-page">
+                <div class="form-group">
+                    <label for="hotelDestination">Destination</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="map-pin" class="input-icon"></i>
+                        <input type="text" id="hotelDestination" name="hotelDestination" placeholder="City or hotel name" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label for="hotelCheckin">Check-in</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="hotelCheckin" name="hotelCheckin" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hotelCheckout">Check-out</label>
+                        <div class="input-wrapper">
+                            <i data-lucide="calendar-days" class="input-icon"></i>
+                            <input type="date" id="hotelCheckout" name="hotelCheckout" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hotelGuests">Guests</label>
+                        <select id="hotelGuests" name="hotelGuests" class="form-select">
+                            <option>2 Guests, 1 Room</option>
+                            <option>1 Guest, 1 Room</option>
+                            <option>3 Guests, 1 Room</option>
+                            <option>4+ Guests, 2 Rooms</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Search Hotels</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

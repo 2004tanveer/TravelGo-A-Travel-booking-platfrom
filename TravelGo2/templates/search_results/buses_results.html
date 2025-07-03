@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Bus Search Results - TravelGo{% endblock %}
+
+{% block content %}
+<section class="search-results-section" style="padding-top: 6rem;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Buses from {{ search_params.busFrom }} to {{ search_params.busTo }}</h2>
+            <p class="section-subtitle">Date: {{ search_params.busDate }}</p>
+        </div>
+
+        {% if buses %}
+            <div class="results-grid">
+                {% for bus in buses %}
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3 class="result-title">{{ bus.operator }} ({{ bus.departure_time }} - {{ bus.arrival_time }})</h3>
+                        <span class="result-price">${{ bus.price }}</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> From: {{ bus.from }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> To: {{ bus.to }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Date: {{ bus.departure_date }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Passengers: {{ search_params.busPassengers }}
+                        </div>
+                    </div>
+                    <div class="result-footer">
+                        {# Changed action to go to seat selection page #}
+                        <form action="{{ url_for('select_bus_seats', bus_id=bus.id) }}" method="GET">
+                            {# Pass all necessary bus details as hidden inputs to the selection page #}
+                            <input type="hidden" name="operator" value="{{ bus.operator }}">
+                            <input type="hidden" name="from" value="{{ bus.from }}">
+                            <input type="hidden" name="to" value="{{ bus.to }}">
+                            <input type="hidden" name="departure_date" value="{{ bus.departure_date }}">
+                            <input type="hidden" name="departure_time" value="{{ bus.departure_time }}">
+                            <input type="hidden" name="arrival_time" value="{{ bus.arrival_time }}">
+                            <input type="hidden" name="price" value="{{ bus.price }}">
+                            <input type="hidden" name="busFrom" value="{{ search_params.busFrom }}">
+                            <input type="hidden" name="busTo" value="{{ search_params.busTo }}">
+                            <input type="hidden" name="busDate" value="{{ search_params.busDate }}">
+                            <input type="hidden" name="busPassengers" value="{{ search_params.busPassengers }}">
+
+                            <button type="submit" class="btn btn-primary">Select Seats</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; color: #6b7280; font-size: 1.1rem; padding: 2rem; background: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                No buses found for your search criteria. Please try different dates or routes.
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

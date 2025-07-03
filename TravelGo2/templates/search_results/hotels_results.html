@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Hotel Search Results - TravelGo{% endblock %}
+
+{% block content %}
+<section class="search-results-section" style="padding-top: 6rem;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Hotels in {{ search_params.hotelDestination }}</h2>
+            <p class="section-subtitle">Check-in: {{ search_params.hotelCheckin }} | Check-out: {{ search_params.hotelCheckout }}</p>
+        </div>
+
+        {% if hotels %}
+            <div class="results-grid">
+                {% for hotel in hotels %}
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3 class="result-title">{{ hotel.name }}</h3>
+                        <span class="result-price">${{ hotel.price_per_night }} / night</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> Location: {{ hotel.location }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="star"></i> Rating: {{ hotel.rating }} / 5
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Check-in: {{ hotel.checkin }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Check-out: {{ hotel.checkout }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Guests: {{ hotel.guests }}
+                        </div>
+                    </div>
+                    <div class="result-footer">
+                        {# Changed action to go to room selection page #}
+                        <form action="{{ url_for('select_hotel_room', hotel_id=hotel.id) }}" method="GET">
+                            {# Pass all necessary hotel details as hidden inputs to the selection page #}
+                            <input type="hidden" name="name" value="{{ hotel.name }}">
+                            <input type="hidden" name="location" value="{{ hotel.location }}">
+                            <input type="hidden" name="checkin" value="{{ hotel.checkin }}">
+                            <input type="hidden" name="checkout" value="{{ hotel.checkout }}">
+                            <input type="hidden" name="guests" value="{{ hotel.guests }}">
+                            <input type="hidden" name="price_per_night" value="{{ hotel.price_per_night }}">
+                            <input type="hidden" name="rating" value="{{ hotel.rating }}">
+                            <input type="hidden" name="hotelDestination" value="{{ search_params.hotelDestination }}">
+                            <input type="hidden" name="hotelCheckin" value="{{ search_params.hotelCheckin }}">
+                            <input type="hidden" name="hotelCheckout" value="{{ search_params.hotelCheckout }}">
+                            <input type="hidden" name="hotelGuests" value="{{ search_params.hotelGuests }}">
+
+                            <button type="submit" class="btn btn-primary">Select Room</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; color: #6b7280; font-size: 1.1rem; padding: 2rem; background: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                No hotels found for your search criteria. Please try different dates or destinations.
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

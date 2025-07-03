@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Select Flight Seats - TravelGo{% endblock %}
+
+{% block head_extra %}
+<style>
+    .seat-map {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); /* 6 columns for seats */
+        gap: 0.5rem;
+        max-width: 400px;
+        margin: 2rem auto;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .seat {
+        width: 40px;
+        height: 40px;
+        background-color: #e2e8f0;
+        border: 1px solid #cbd5e0;
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+    .seat.available:hover {
+        background-color: #d1e7dd; /* Light green on hover */
+        border-color: #28a745;
+    }
+    .seat.selected {
+        background-color: #28a745; /* Green for selected */
+        color: white;
+        border-color: #218838;
+    }
+    .seat.unavailable {
+        background-color: #f8d7da; /* Light red for unavailable */
+        border-color: #dc3545;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    .seat-aisle {
+        grid-column: span 1; /* Empty column for aisle */
+        background: none;
+        border: none;
+        cursor: default;
+    }
+    .seat-label {
+        font-weight: bold;
+        color: #6c757d;
+        text-align: center;
+    }
+    .seat-info {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: #4a5568;
+    }
+    .seat-info span {
+        font-weight: bold;
+        color: #2d3748;
+    }
+    .selection-form {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .selection-form h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #2d3748;
+    }
+    .selection-form .btn-primary {
+        width: 100%;
+        margin-top: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="search-results-section" style="padding-top: 6rem;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Select Seats for Your Flight</h2>
+            <p class="section-subtitle">
+                {{ flight.airline }} from {{ flight.from }} to {{ flight.to }} on {{ flight.departure_date }}
+            </p>
+            <p class="section-subtitle">
+                Departure: {{ flight.departure_time }} | Arrival: {{ flight.arrival_time }} | Price: ${{ flight.price }}
+            </p>
+        </div>
+
+        <div class="selection-form">
+            <h3>Choose Your Seat</h3>
+            <div class="seat-info">
+                Selected Seat: <span id="selectedSeatDisplay">None</span>
+            </div>
+
+            <div class="seat-map">
+                {# Example Seat Map (A, B, C | D, E, F) #}
+                {# Row 1 #}
+                <div class="seat-label">1</div>
+                <div class="seat available" data-seat="1A">A</div>
+                <div class="seat available" data-seat="1B">B</div>
+                <div class="seat available" data-seat="1C">C</div>
+                <div class="seat available" data-seat="1D">D</div>
+                <div class="seat available" data-seat="1E">E</div>
+                <div class="seat available" data-seat="1F">F</div>
+
+                {# Row 2 #}
+                <div class="seat-label">2</div>
+                <div class="seat available" data-seat="2A">A</div>
+                <div class="seat available" data-seat="2B">B</div>
+                <div class="seat unavailable" data-seat="2C">C</div> {# Example unavailable seat #}
+                <div class="seat available" data-seat="2D">D</div>
+                <div class="seat available" data-seat="2E">E</div>
+                <div class="seat available" data-seat="2F">F</div>
+
+                {# Row 3 #}
+                <div class="seat-label">3</div>
+                <div class="seat available" data-seat="3A">A</div>
+                <div class="seat available" data-seat="3B">B</div>
+                <div class="seat available" data-seat="3C">C</div>
+                <div class="seat available" data-seat="3D">D</div>
+                <div class="seat available" data-seat="3E">E</div>
+                <div class="seat available" data-seat="3F">F</div>
+
+                {# Add more rows as needed #}
+            </div>
+
+            <form action="{{ url_for('confirm_booking', booking_type='flight', item_id=flight.id) }}" method="POST" id="flightBookingForm">
+                {# Hidden input to store the selected seat #}
+                <input type="hidden" name="selected_seat" id="selectedSeatInput" required>
+
+                {# Pass all original flight details as hidden inputs for confirmation #}
+                <input type="hidden" name="airline" value="{{ flight.airline }}">
+                <input type="hidden" name="from" value="{{ flight.from }}">
+                <input type="hidden" name="to" value="{{ flight.to }}">
+                <input type="hidden" name="departure_date" value="{{ flight.departure_date }}">
+                <input type="hidden" name="return_date" value="{{ flight.return_date }}">
+                <input type="hidden" name="departure_time" value="{{ flight.departure_time }}">
+                <input type="hidden" name="arrival_time" value="{{ flight.arrival_time }}">
+                <input type="hidden" name="duration" value="{{ flight.duration }}">
+                <input type="hidden" name="price" value="{{ flight.price }}">
+                <input type="hidden" name="stops" value="{{ flight.stops }}">
+                <input type="hidden" name="flightFrom" value="{{ search_params.flightFrom }}">
+                <input type="hidden" name="flightTo" value="{{ search_params.flightTo }}">
+                <input type="hidden" name="flightDeparture" value="{{ search_params.flightDeparture }}">
+                <input type="hidden" name="flightReturn" value="{{ search_params.flightReturn }}">
+                <input type="hidden" name="flightPassengers" value="{{ search_params.flightPassengers }}">
+
+                <button type="submit" class="btn btn-primary">Confirm Selection & Book Flight</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block body_extra %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const seats = document.querySelectorAll('.seat.available');
+        const selectedSeatInput = document.getElementById('selectedSeatInput');
+        const selectedSeatDisplay = document.getElementById('selectedSeatDisplay');
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', () => {
+                // Deselect all other seats
+                seats.forEach(s => s.classList.remove('selected'));
+
+                // Select the clicked seat
+                seat.classList.add('selected');
+                const seatNumber = seat.dataset.seat;
+                selectedSeatInput.value = seatNumber;
+                selectedSeatDisplay.textContent = seatNumber;
+            });
+        });
+
+        // Add form submission validation (optional, but good for required fields)
+        const flightBookingForm = document.getElementById('flightBookingForm');
+        if (flightBookingForm) {
+            flightBookingForm.addEventListener('submit', (event) => {
+                if (!selectedSeatInput.value) {
+                    alert('Please select a seat before booking.'); // Using alert for simplicity, replace with custom modal in production
+                    event.preventDefault(); // Stop form submission
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

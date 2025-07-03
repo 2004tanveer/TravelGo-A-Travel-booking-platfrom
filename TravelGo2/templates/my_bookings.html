@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings - TravelGo{% endblock %}
+
+{% block content %}
+<section class="search-results-section" style="padding-top: 6rem;">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">My Bookings</h2>
+            <p class="section-subtitle">View all your confirmed and upcoming travel plans.</p>
+        </div>
+
+        {% if bookings %}
+            <div class="results-grid">
+                {% for booking in bookings %}
+                <div class="result-card">
+                    <div class="result-header">
+                        <h3 class="result-title">{{ booking.booking_type | capitalize }} Booking (ID: {{ booking._id | string | truncate(8, True, '') }})</h3>
+                        <span class="result-price">
+                            {% if booking.details.get('price') %}
+                                ${{ booking.details.get('price') }}
+                            {% elif booking.details.get('price_per_night') %}
+                                ${{ booking.details.get('price_per_night') }} / night
+                            {% else %}
+                                Price not available
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="result-details">
+                        {# Display booking details based on type #}
+                        {% if booking.booking_type == 'flight' %}
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> From: {{ booking.details.get('from') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> To: {{ booking.details.get('to') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Departure: {{ booking.details.get('departure_date') }}
+                        </div>
+                        {% if booking.details.get('return_date') and booking.details.get('return_date') != 'N/A' %}
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Return: {{ booking.details.get('return_date') }}
+                        </div>
+                        {% endif %}
+                        <div class="result-detail-item">
+                            <i data-lucide="plane"></i> Airline: {{ booking.details.get('airline') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Passengers: {{ booking.details.get('flightPassengers') }}
+                        </div>
+                        {% if booking.details.get('selected_seat') %}
+                        <div class="result-detail-item">
+                            <i data-lucide="chair"></i> Seat: {{ booking.details.get('selected_seat') }}
+                        </div>
+                        {% endif %}
+                        {% elif booking.booking_type == 'hotel' %}
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> Destination: {{ booking.details.get('location') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Check-in: {{ booking.details.get('checkin') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Check-out: {{ booking.details.get('checkout') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="bed"></i> Guests/Rooms: {{ booking.details.get('guests') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="building-2"></i> Hotel: {{ booking.details.get('name') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="star"></i> Rating: {{ booking.details.get('rating') }}
+                        </div>
+                        {% if booking.details.get('selected_room_type') %}
+                        <div class="result-detail-item">
+                            <i data-lucide="door-open"></i> Room Type: {{ booking.details.get('selected_room_type') }}
+                        </div>
+                        {% endif %}
+                        {% elif booking.booking_type == 'train' %}
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> From: {{ booking.details.get('from') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> To: {{ booking.details.get('to') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Date: {{ booking.details.get('departure_date') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="train"></i> Train: {{ booking.details.get('train_number') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="award"></i> Class: {{ booking.details.get('travel_class') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Passengers: {{ booking.details.get('trainPassengers') }}
+                        </div>
+                        {% if booking.details.get('selected_train_seat') %}
+                        <div class="result-detail-item">
+                            <i data-lucide="chair"></i> Seat: {{ booking.details.get('selected_train_seat') }}
+                        </div>
+                        {% endif %}
+                        {% elif booking.booking_type == 'bus' %}
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> From: {{ booking.details.get('from') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="map-pin"></i> To: {{ booking.details.get('to') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar-days"></i> Date: {{ booking.details.get('departure_date') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="bus"></i> Operator: {{ booking.details.get('operator') }}
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="users"></i> Passengers: {{ booking.details.get('busPassengers') }}
+                        </div>
+                        {% if booking.details.get('selected_bus_seat') %}
+                        <div class="result-detail-item">
+                            <i data-lucide="chair"></i> Seat: {{ booking.details.get('selected_bus_seat') }}
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                        <div class="result-detail-item">
+                            <i data-lucide="clipboard-check"></i> Status: 
+                            <span style="font-weight: bold; color: 
+                                {% if booking.status == 'confirmed' %}green{% elif booking.status == 'cancelled' %}red{% else %}orange{% endif %};">
+                                {{ booking.status | capitalize }}
+                            </span>
+                        </div>
+                        <div class="result-detail-item">
+                            <i data-lucide="calendar"></i> Booked On: {{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}
+                        </div>
+                    </div>
+                    <div class="result-footer">
+                        {# Only show cancel button if status is 'confirmed' #}
+                        {% if booking.status == 'confirmed' %}
+                        <form action="{{ url_for('cancel_booking', booking_id=booking._id | string) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-outline" style="background-color: #ef4444; color: white; border-color: #dc2626;">
+                                <i data-lucide="x-circle" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></i>
+                                Cancel Booking
+                            </button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-ghost" disabled style="color: #9ca3af; cursor: not-allowed;">
+                             <i data-lucide="info" style="width: 1rem; height: 1rem; margin-right: 0.5rem;"></i>
+                            {{ booking.status | capitalize }}
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="text-align: center; color: #6b7280; font-size: 1.1rem; padding: 2rem; background: white; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                You haven't made any bookings yet. Start your journey by searching for flights, hotels, trains, or buses!
+            </p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
