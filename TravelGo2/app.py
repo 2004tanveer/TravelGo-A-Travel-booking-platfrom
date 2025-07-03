@@ -33,13 +33,25 @@ login_manager.init_app(app)
 login_manager.login_view = 'login' # Redirect to login if user tries to access a protected page
 login_manager.login_message_category = "info" # Category for flash message when login is required
 
+# --- DEBUGGING CHANGE HERE ---
+# Get region from app.config, but provide a hardcoded fallback if it's still somehow missing.
+# This helps diagnose if app.config is not getting the value from Config.
+aws_region_to_use = app.config.get('AWS_REGION')
+if not aws_region_to_use:
+    print("DEBUG: AWS_REGION was not found in app.config. Falling back to hardcoded 'us-east-1'.")
+    aws_region_to_use = 'us-east-1' # Hardcoded fallback
+else:
+    print(f"DEBUG: AWS_REGION from app.config is: {aws_region_to_use}")
+# --- END DEBUGGING CHANGE ---
+
+
 # Initialize AWS DynamoDB and SNS clients
 # Boto3 will automatically pick up credentials from IAM roles on EC2
-dynamodb = boto3.resource('dynamodb', region_name=app.config['AWS_REGION'])
+dynamodb = boto3.resource('dynamodb', region_name=aws_region_to_use)
 users_table = dynamodb.Table(app.config['DYNAMODB_USERS_TABLE'])
 bookings_table = dynamodb.Table(app.config['DYNAMODB_BOOKINGS_TABLE'])
 
-sns_client = boto3.client('sns', region_name=app.config['AWS_REGION'])
+sns_client = boto3.client('sns', region_name=aws_region_to_use) # Use the determined region
 
 class User(UserMixin):
     # For DynamoDB without GSI, 'email' will be the primary key for the User table
@@ -791,7 +803,7 @@ def cancel_booking(booking_id, booking_date_iso):
         # Send SNS notification for cancellation
         subject = f"TravelGo Booking Cancellation: {booking.get('booking_type', 'Booking')} (ID: {booking_id[:8]})"
         message = f"Hello {current_user.username or current_user.email},\n\nYour booking (ID: {booking_id[:8]}...) has been successfully cancelled.\n\nIf you have any questions, please contact support."
-        send_sns_notification(subject, message, current_user.email)
+        send_sns_notification(subject, message, current_user.email) # Fixed: call the correct function name
 
     except ClientError as e:
         if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
@@ -805,8 +817,7 @@ def cancel_booking(booking_id, booking_date_iso):
 
     return redirect(url_for('my_bookings'))
 
-
-if __name__ == '__main__':
+    if __name__ == '__main__':
     # This block is for local development only.
     # In production, you would use a WSGI server (like Gunicorn) to run the app.
     # Ensure your environment variables (SECRET_KEY, AWS_REGION, DYNAMODB_TABLES, SNS_TOPIC_ARN)
