@@ -817,9 +817,10 @@ def cancel_booking(booking_id, booking_date_iso):
 
     return redirect(url_for('my_bookings'))
 
-    if __name__ == '__main__':
+
+if __name__ == '__main__':
     # This block is for local development only.
     # In production, you would use a WSGI server (like Gunicorn) to run the app.
     # Ensure your environment variables (SECRET_KEY, AWS_REGION, DYNAMODB_TABLES, SNS_TOPIC_ARN)
     # are set in your production environment (e.g., EC2 user data, systemd service, Parameter Store).
-       app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
