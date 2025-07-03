@@ -661,8 +661,36 @@ def confirm_booking(booking_type, item_id):
         except (ValueError, IndexError):
             num_passengers = 1 # Default to 1 if parsing fails
 
-        price_per_person = final_booking_details.get('price', Decimal('0'))
-        final_booking_details['total_price'] = price_per_person * Decimal(str(num_passengers))
+        if not num_passengers_raw:
+    app.logger.error("Number of passengers not provided for total price calculation.")
+    flash("Please specify the number of passengers.", "danger")
+    return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect to an appropriate error page/route
+
+try:
+    num_passengers = Decimal(num_passengers_raw)
+except InvalidOperation:
+    app.logger.error(f"Invalid number of passengers value: '{num_passengers_raw}'")
+    flash("Invalid number of passengers. Please enter a valid number.", "danger")
+    return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect on invalid number
+
+# --- Convert price_per_person to Decimal with error handling ---
+price_from_details = final_booking_details.get('price')
+
+if price_from_details is None:
+    # If 'price' key is truly missing, use the default Decimal('0')
+    price_per_person = Decimal('0')
+    app.logger.warning("Price per person not found in final_booking_details. Defaulting to 0.")
+else:
+    try:
+        # Convert the retrieved price to Decimal. Important if it's stored as a string.
+        price_per_person = Decimal(str(price_from_details))
+    except InvalidOperation:
+        app.logger.error(f"Invalid price_per_person value in final_booking_details: '{price_from_details}'")
+        flash("Error processing price information. Please try again.", "danger")
+        return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect on invalid price
+
+# --- Perform the multiplication (now both are Decimals) ---
+final_booking_details['total_price'] = price_per_person * num_passengers
 
 
     # Prepare item for DynamoDB
