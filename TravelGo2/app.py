@@ -127,17 +127,54 @@ def login():
         return redirect(url_for('index'))
 
     if request.method == 'POST':
-        email = request.form.get('email') # Login strictly by email (Partition Key)
+        # --- START UPDATES HERE ---
+
+        # 1. Get raw email input
+        email_raw = request.form.get('email')
+
+        # 2. Sanitize and validate email
+        if not email_raw:
+            flash('Email address is required.', 'danger')
+            return render_template('auth/login.html')
+
+        email = email_raw.strip() # Remove leading/trailing whitespace
         password = request.form.get('password')
+
+        # 3. Enhanced Debugging Logs (VERY IMPORTANT)
+        app.logger.debug(f"Login attempt received for email (raw): '{email_raw}'")
+        app.logger.debug(f"Login attempt for email (stripped): '{email}'")
+        app.logger.debug(f"Type of email variable: {type(email)}")
+        app.logger.debug(f"Length of email variable: {len(email)}")
+        if email: # Only try to encode if email is not None or empty
+            try:
+                app.logger.debug(f"Email bytes (UTF-8): {email.encode('utf-8')}")
+            except UnicodeEncodeError as uee:
+                app.logger.error(f"Error encoding email to UTF-8: {uee}. Email: '{email}'")
+
+        # 4. Handle cases where email might be empty after stripping
+        if not email:
+            flash('Please enter a valid email address.', 'danger')
+            return render_template('auth/login.html')
 
         user_data = None
         try:
+            # The problematic line - no change to the line itself, but the 'email' variable is now sanitized
+            app.logger.debug(f"Calling get_item with Key: {{'email': '{email}'}}")
             response = users_table.get_item(Key={'email': email})
             user_data = response.get('Item')
         except ClientError as e:
-            app.logger.error(f"DynamoDB error during login lookup: {e.response['Error']['Message']}")
+            error_message = e.response.get('Error', {}).get('Message', 'Unknown DynamoDB error')
+            app.logger.error(f"DynamoDB error during login lookup: {error_message}")
+            app.logger.error(f"Error response: {e.response}") # Log the full error response for more details
             flash('An error occurred during login. Please try again.', 'danger')
             return render_template('auth/login.html')
+        except Exception as e:
+            # Catch any other unexpected errors
+            app.logger.error(f"An unexpected error occurred during login lookup: {e}", exc_info=True)
+            flash('An unexpected error occurred. Please try again.', 'danger')
+            return render_template('auth/login.html')
+
+        # --- END UPDATES ---
 
         if user_data and check_password_hash(user_data['password'], password):
             user_obj = User(user_data['email'], user_data['password'], user_data.get('username'))
