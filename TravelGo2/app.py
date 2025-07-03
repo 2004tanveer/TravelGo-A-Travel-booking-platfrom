@@ -662,16 +662,16 @@ def confirm_booking(booking_type, item_id):
             num_passengers = 1 # Default to 1 if parsing fails
 
         if not num_passengers_raw:
-    app.logger.error("Number of passengers not provided for total price calculation.")
-    flash("Please specify the number of passengers.", "danger")
-    return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect to an appropriate error page/route
+            app.logger.error("Number of passengers not provided for total price calculation.")
+            flash("Please specify the number of passengers.", "danger")
+             return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect to an appropriate error page/route
 
-try:
-    num_passengers = Decimal(num_passengers_raw)
-except InvalidOperation:
-    app.logger.error(f"Invalid number of passengers value: '{num_passengers_raw}'")
-    flash("Invalid number of passengers. Please enter a valid number.", "danger")
-    return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect on invalid number
+         try:
+          num_passengers = Decimal(num_passengers_raw)
+         except InvalidOperation:
+              app.logger.error(f"Invalid number of passengers value: '{num_passengers_raw}'")
+             flash("Invalid number of passengers. Please enter a valid number.", "danger")
+             return redirect(url_for('your_booking_page_on_error')) # IMPORTANT: Redirect on invalid number
 
 # --- Convert price_per_person to Decimal with error handling ---
 price_from_details = final_booking_details.get('price')
