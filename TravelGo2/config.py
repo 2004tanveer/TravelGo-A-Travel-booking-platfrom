@@ -10,7 +10,7 @@ class Config:
     # AWS Configuration for DynamoDB and SNS
     # This region MUST match the region where your DynamoDB tables and SNS topic are created.
     # Your SNS ARN indicates 'us-east-1'.
-    AWS_REGION = os.environ.get('AWS_REGION') or 'us-east-1a' 
+    AWS_REGION = os.environ.get('AWS_REGION') or 'us-east-1' 
     
     # DynamoDB Table Names
     # These MUST match the exact names of your tables in DynamoDB.
